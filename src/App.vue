@@ -1,27 +1,33 @@
 <template>
-<Navigation></Navigation>
-<router-view> </router-view>
+  <Navigation></Navigation>
+  <router-view> </router-view>
+  <AbcD></AbcD>
 </template>
 
 <script>
-import Navigation from './components/Navigation.vue';
-// import LoginPage from './view/loginPage.vue'
-
+import Navigation from "./components/Navigation.vue";
+import AbcD from "./components/AbcD.vue";
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    Navigation
-}
-}
+    Navigation,
+    AbcD
+  },
+};
 </script>
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 0px;
+}
+.selector-for-some-widget {
+  box-sizing: content-box;
+}
+.paginate1 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
 }
 </style>

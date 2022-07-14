@@ -1,38 +1,44 @@
 <template lang="">
     <div class = "nav">
-        <router-link to="/login" v-if="!hasProfile.id">
+    <div>
+        <router-link to="/">Home</router-link>
+    </div>
+    <div><router-link  to="/login" v-if="!hasProfile.id">
             Đăng nhập
         </router-link>
         <router-link  to="/" v-else  @click = "logout()">
                 Đăng xuất
         </router-link>
+        </div>
+        
     </div>
 </template>
 <script>
-import apiAuth from '@/api/apiAuth';
+import apiAuth from "@/api/apiAuth";
 export default {
-    name: 'NavigationX',
-    methods:{
-        logout(){
-            this.$store.dispatch('clearProfile');
-            apiAuth.logout();
-        }
+  name: "NavigationX",
+  methods: {
+    logout() {
+      this.$store.dispatch("clearProfile");
+      apiAuth.logout();
     },
-    computed: {
-        hasProfile() {
-            return this.$store.state.profile;
-        }
-    }
-   
-}
+  },
+  computed: {
+    hasProfile() {
+      return this.$store.state.profile;
+    },
+  },
+};
 </script>
 <style lang="css">
-    .nav{
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-        background-color: rgb(143, 128, 128);
-        width: auto;
-        height: 100px;
-    }
+.nav {
+  display: flex;
+  padding: 60px;
+  text-align: center;
+  background: #1abc9c;
+  color: white;
+  font-size: 30px;
+  justify-content: space-between;
+}
+
 </style>

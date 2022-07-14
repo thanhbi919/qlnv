@@ -1,10 +1,12 @@
 <template lang="">
     <div>
-        Day la trang home
+        Day la home page
     </div>
 </template>
+
 <script>
 export default {
+   
 }
 </script>
 <style lang="">

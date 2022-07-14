@@ -1,3 +1,3 @@
 module.exports = {
-    BASE_URL: "http://3bc3-221-133-18-67.ngrok.io/api"
+    BASE_URL: "http://5010-27-72-98-245.ngrok.io/api"
 }
