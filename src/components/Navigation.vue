@@ -1,7 +1,7 @@
 <template lang="">
     <div class = "nav">
     <div>
-        <router-link to="/">Home</router-link>
+        <router-link to="/" v-demo = "{text:'hello'}">Home</router-link>
     </div>
     <div><router-link  to="/login" v-if="!hasProfile.id">
             Đăng nhập

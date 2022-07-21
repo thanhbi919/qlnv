@@ -1,17 +1,14 @@
 <template>
   <Navigation></Navigation>
   <router-view> </router-view>
-  <AbcD></AbcD>
 </template>
 
 <script>
 import Navigation from "./components/Navigation.vue";
-import AbcD from "./components/AbcD.vue";
 export default {
   name: "App",
   components: {
     Navigation,
-    AbcD
   },
 };
 </script>

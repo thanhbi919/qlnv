@@ -3,10 +3,9 @@
 
   <!-- Modal content -->
   <div class="modal-content" >
-    <span class="close" @click = closeModal()>&times;</span>
     <div>   
         <label for="emp_no">Emp_no: </label>
-        <input type="text" v-model="editEmployee.emp_no" />
+        <input type="number" v-model="editEmployee.emp_no" />
     </div>
     <div>   
         <label for="first_name">First name: </label>
@@ -18,7 +17,10 @@
     </div>
     <div>   
         <label for="gender">Gender: </label>
-        <input type="text" v-model="editEmployee.gender" />
+        <select  id="title" v-model = "editEmployee.gender">
+            <option   value="M">Male</option>
+            <option value="F">Female</option>
+            </select>
     </div>
     <div>   
         <label for="salary">Salary: </label>
@@ -27,7 +29,7 @@
     <div>   
             <label for="title">Title:</label>
             <select  id="title" v-model = "editEmployee.title_id ">
-            <option v-for="data in titles " :key = "data.id"  value="data.id">{{data.name}}</option>
+            <option v-for="data in titles " :key = "data.id"  v-bind:value="data.id">{{data.name}}</option>
         </select>
     </div>
     <div>   
@@ -38,14 +40,17 @@
     </div>
     <div>   
         <label for="hire_date">Hire Date: </label>
-        <input type="text" v-model="editEmployee.hire_date" />
+        <input type="date" v-model="editEmployee.hire_date" />
     </div>
     <div>   
         <label for="birth_date">Birthday: </label>
-        <input type="text" v-model="editEmployee.birth_date" />
+        <input type="date" v-model="editEmployee.birth_date" />
     </div>
-    <button type="" @click = closeModal()>Close</button>
+    <div style="display:flex margin:auto">
+      <button type="" @click = closeModal()>Close</button>
     <button type="" @click ="save()">Save</button>
+    </div>
+    
 
   </div>
   
@@ -55,13 +60,13 @@
 <script>
 import apiEmployee from "@/api/apiEmployee";
 export default {
- created() {
-   apiEmployee.getDepartment().then((res) => {
-    console.log("department",res)
+  created() {
+    apiEmployee.getDepartment().then((res) => {
+      // console.log("department",res)
       this.departments = res;
     });
-   apiEmployee.getTitle().then((res) => {
-      console.log("title",res.data)
+    apiEmployee.getTitle().then((res) => {
+      // console.log("title",res.data)
       this.titles = res.data;
     });
   },
@@ -108,7 +113,7 @@ export default {
   /* display: none; Hidden by default */
   position: fixed;
   /* Stay in place */
-  z-index: 1;
+  z-index: 99;
   /* Sit on top */
   padding-top: 100px;
   /* Location of the box */
