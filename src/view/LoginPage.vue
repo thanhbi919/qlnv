@@ -1,59 +1,101 @@
 <template lang="">
-    <div>
-    <div>
-         <label for="username">Username</label>
-        <input type="text" name="" v-model = "account.username" >
-        {{username }}
-      </div>
-      <div>
-           <label for="password">Password</label>
-          <input type="password" name="" v-model = "account.password">
-          {{
-    password
-  }}
-      </div>
-      <div>
-      <router-link to="/register">Register</router-link>
-          <button @click = "handleLogin()">Login</button>
-         </div>
-      </div>
+<div class="login-page" style="margin-top:100px">
 
+    <el-form ref="ruleForm" :rules="rules" :label-position="top" label-width="100px" :model="ruleForm" style="max-width: 460px; margin:auto">
+        <el-form-item label="username" prop="username">
+            <el-input v-model="ruleForm.username" />
+        </el-form-item>
+        <el-form-item label="password" prop="password">
+            <el-input type="password" v-model="ruleForm.password" />
+        </el-form-item>
+        <el-form-item>
+            <el-button type="primary" @click="submitForm('ruleForm')">Login</el-button>
+            <el-button @click="resetForm('ruleForm')">Reset</el-button>
+            <el-button type="danger" @click="handleRegister()">Register</el-button>
+        </el-form-item>
+    </el-form>
 
+</div>
 </template>
+
 <script>
 import apiAuth from '@/api/apiAuth';
-import {mapState, mapActions} from "vuex";
 
+import {
+    mapState,
+} from "vuex";
+import useVuelidate from '@vuelidate/core'
 export default {
-  name: "LoginPage",
-  data() {
-    return {
-      account: {
-        username: '',
-        password: ''
-      }
-    }
-  },
+    name: "LoginPage",
+    setup: () => ({ v$: useVuelidate() }),
 
-  methods: {
-    handleLogin() {
-      apiAuth.login(this.account).then(response => {
-        console.log(response);
-        localStorage.setItem('token', response.access_token);
-        this.saveProfile(response.user);
-        this.$router.push('/Employee');
-      });
+    data() {
+        return {
+
+            ruleForm: {
+                username: '',
+                password: ''
+            },
+            rules: {
+                username: [{
+                    required: true,
+                    message: 'Please input your name',
+                    trigger: 'blur'
+                }],
+                password: [{
+                    required: true,
+                    message: 'Please input your password',
+                    trigger: 'blur'
+                }]
+            }
+        }
     },
-    saveProfile(profile) {
-      this.$store.dispatch('saveProfile', profile);
+
+    methods: {
+        submitForm(formName) {
+            console.log(this.$refs[formName]);
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    console.log('submit!');
+                    this.handleLogin(this.ruleForm);
+                } else {
+                    console.log('error submit!');
+                    return false;
+                }
+            });
+        },
+        handleLogin(form) {
+            apiAuth.login(form).then(
+                response => {
+                    console.log(response);
+                    localStorage.setItem('token', response.access_token);
+                    localStorage.setItem('username',response.user.username);
+                    localStorage.setItem('id',response.user.id);
+                    localStorage.setItem('role',1);
+
+                    this.saveProfile(response.user);
+                    this.$router.push('/home/employee');
+                },
+                error => {
+                    alert(error.message);
+                });
+        },
+        saveProfile(profile) {
+            this.$store.dispatch('saveProfile', profile);
+        },
+        handleRegister() {
+            this.$router.push('/register');
+        },
+        resetForm(formName) {
+            this.$refs[formName].resetFields();
+        }
+    },
+    computed: {
+        ...mapState['profile'],
     }
-  },
-  computed: {
-    ...mapActions["deleteStudent"],
-    ...mapState['profile'],
-  }
 };
 </script>
-<style lang="">
+
+<style lang="css">
 
 </style>

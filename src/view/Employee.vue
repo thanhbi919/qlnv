@@ -1,9 +1,8 @@
 <template  lang="">
     <div class ="employe1">
         <h1>Danh sach </h1>
-        <button type="" @click="add()" >Add</button>
-        <br>
-        <!-- <input type="text" name="" v-model = "search"> -->
+         <el-button type="Default" @click="add()"  >ADD</el-button>
+<br>
         <table class="table">
         <thead>
           <tr>
@@ -42,41 +41,55 @@
           </tr>
         </tbody>
       </table>
-      <EditEmployee v-bind:displayModal = "displayModal"
-      v-bind:index = "curInd"
-      v-bind:employee = "employeeEdit"
-      @saveEdit ="saveEdit"
-      @closeModal = "closeModal" 
-    ></EditEmployee>
+      
+
+    <EditEmployeeUI 
+    v-bind:dialogTableVisible = "displayDialog"
+    v-bind:addStatus = "addStatus"
+    @closeDialog = "closeDialog" 
+    @saveEdit ="saveEdit"
+    v-bind:employee = "employeeEdit"
+    ref="edit"
+    ></EditEmployeeUI>
+    
+    
     <AbcD v-bind:employees = "employees"
-    @pageChange = "pageChange"></AbcD>
+    v-bind:pageCount = "pageCount"
+    :page = "page"
+    @pageChange = "pageChange"
+    @prevPage = "prevPage" ></AbcD>
+
     </div>
 </template>
 <script>
 import apiEmployee from "@/api/apiEmployee";
-import EditEmployee from "@/view/EditEmployee";
 import AbcD from "@/components/AbcD";
 import Mixin from "@/mixins/mixin";
+import EditEmployeeUI from "@/view/EditEmployeeUI";
 export default {
   name: "EmployeE",
   mixins: [Mixin],
   components: {
-    EditEmployee,
-    AbcD
+    AbcD,
+    EditEmployeeUI,
   },
 
-   created() {
-     apiEmployee.getEmployee().then((res) => {
-      console.log("created",res.data);
-      this.employees = res.data
-      console.log("after",this.employees);
+  created() {
+    apiEmployee.getEmployee().then((res) => {
+      console.log("created", res.data.data);
+      this.employees = res.data.data;
+      this.pageCount = res.data.maxPage;
+      // console.log("pageCount", this.pageCount);
+      console.log("after", this.employees);
     });
   },
   data: function () {
     return {
       displayModal: "none",
-      page: 1,
-      search:"",
+      displayDialog: "none",
+      page:1,
+      pageCount: 0,
+      search: "",
       employees: [],
       employeeEdit: {},
       filEmployee: [],
@@ -105,44 +118,53 @@ export default {
         this.employeeEdit = res.employee;
         console.log("edit:", res);
       });
-      this.displayModal = "block";
+      // this.displayModal = "block";
+      this.displayDialog = true;
       this.curInd = index;
     },
 
-    async saveEdit(data) {
+    async saveEdit(data, param) {
+      console.log("saveEdit: ", data);
       if (this.addStatus == false) {
-        await apiEmployee.updateEmployee(data.id, data).then((res) => {
+        await apiEmployee.updateEmployee(param, data).then((res) => {
           console.log(res);
-          this.displayModal = "none";
+          // this.displayModal = "none";
+          this.displayDialog = false;
         });
         apiEmployee.getEmployee().then((res) => {
-          this.employees = res.data;
+          this.employees = res.data.data;
           console.log(this.employees);
         });
       } else {
-        console.log("add: ",data)
+        console.log("add: ", data);
         await apiEmployee.createEmployee(data).then((res) => {
-          this.displayModal = "none";
+          // this.displayModal = "none";
+          this.displayDialog = false;
           console.log("add: ", res);
         });
         apiEmployee.getEmployee().then((res) => {
           this.employees = res.data;
+          this.pageCount = res.data.maxPage;
           console.log(this.employees);
         });
-        this.addStatus=false;
+        this.addStatus = false;
       }
     },
     add() {
-      this.displayModal = "block";
+      this.displayDialog = true;
       this.addStatus = true;
     },
     deletee(index) {
+      this.employees.filter((employee) => {
+        employee.id != index;
+      });
+
       console.log("index: ", index);
       apiEmployee.deleteEmployee(index).then((res) => {
         console.log(res);
       });
       apiEmployee.getEmployee().then((res) => {
-        console.log('avsdadf');
+        console.log("avsdadf");
         this.employees = res.data;
         console.log(this.employees);
       });
@@ -150,20 +172,33 @@ export default {
     closeModal() {
       this.displayModal = "none";
     },
+    closeDialog() {
+      this.addStatus = false;
+      console.log("closeDialog");
+      this.displayDialog = false;
+      console.log("closeDialog", this.$refs.edit.$refs.ruleForm.resetFields());
+      // console.log("closeDialog",this.$refs.edit.$refs.ruleForm.clearValidate());
+      console.log("closeDialog", this.$refs.edit.$refs.ruleForm);
+    },
     pageChange(page) {
       console.log("page: ", page);
-      this.page = page
+      this.page = page;
     },
+    prevPage(page){
+      this.page = page --;
+    }
   },
-  computed:{
-    filterEmployee(){
-      return this.employees.slice((this.page-1)*2,this.page*2).filter(employee => {
+  computed: {
+    filterEmployee() {
+      return this.employees.filter((employee) => {
         employee.hire_date = this.formatDate(employee.hire_date);
         employee.birth_date = this.formatDate(employee.hire_date);
-        return employee.last_name.toLowerCase().includes(this.search.toLowerCase());
+        return employee.last_name
+          .toLowerCase()
+          .includes(this.search.toLowerCase());
       });
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="css">

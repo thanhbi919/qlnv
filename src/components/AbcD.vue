@@ -1,43 +1,57 @@
 <template lang="">
-       <paginate
-       v-model="page"
-        :page-count="pageCount"
-        :click-handler="clickHandler(page)"
-        :prev-text="'Prev'"
-        :next-text="'Next'"
->
-</paginate>
+      
+<button type="" @click ="prevPage">Prev</button>
+<input  v-model = "pageCurrent" type="text">
+<h3>{{pageCurrent}}</h3>
+<button type="" @click = "pageCurrent++">Next</button>
 </template>
 <script>
-import Paginate from "vuejs-paginate-next";
+// import Paginate from "vuejs-paginate-next";
 export default {
   components: {
-    paginate: Paginate,
+    // paginate: Paginate,
   },
   props: {
     employees: {
       type: Array,
       default: () => {},
     },
+    pageCount:{
+      type: Number,
+    },
+    page:{
+      type: Number,
+    }
   },
   watch: {
-    employees: function (newVal) {
-        console.log("employees",newVal.length);
-      this.pageCount= Math.ceil(newVal.length/2);
-    },
+   
   },
   data() {
     return {
-      pageCount: 0,
-      page: 1,
+      innnerValue: 1
     };
   },
+  computed:{
+    pageCurrent:{
+      get(){
+        return this.page  || this.innnerValue;
+      },
+      set(val){
+        console.log("val",this.page);
+        this.$emit("input",val);
+      }
+    }
+  },
   methods: {
-    clickHandler(page) {
-      this.page = page;
-      console.log("page",page);
-      this.$emit("pageChange", page);
-    },
+   prevPage(){
+      this.$emit('input', this.pageCurrent++);
+   },
+    // clickHandler(page) {
+    //   // console.log("pageCount", this.pageCount);
+    //   // console.log("page",page);
+    //   // this.$emit("pageChange", page);
+    //   this.pageCurrent = page;
+    // },
   },
 };
 </script>

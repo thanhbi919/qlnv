@@ -1,8 +1,11 @@
-import Api from "./api"
+import Api from "@/untils/request";
 
 export default {
+    getProfile() {
+        return Api.get("/profile");
+    },
     getEmployee() {
-        return Api.get("/employee").then(res => res.data);
+        return Api.get("/employee?page_size=2");
     },
     getDepartment(){
         return Api.get("/department").then(res => res.data.items);
