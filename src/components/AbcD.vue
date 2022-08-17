@@ -1,11 +1,11 @@
 <template lang="">
       
-<button type="" @click ="prevPage">Prev</button>
-<input  v-model = "pageCurrent" type="text">
-<h3>{{pageCurrent}}</h3>
-<button type="" @click = "pageCurrent++">Next</button>
+<button type="" @click ="prePage" >Prev</button>
+<input  v-model = "pageCurrent" type="text" disabled>
+<button type="" @click = "nextPage">Next</button>
 </template>
 <script>
+
 // import Paginate from "vuejs-paginate-next";
 export default {
   components: {
@@ -19,7 +19,7 @@ export default {
     pageCount:{
       type: Number,
     },
-    page:{
+    modelValue:{
       type: Number,
     }
   },
@@ -34,24 +34,29 @@ export default {
   computed:{
     pageCurrent:{
       get(){
-        return this.page  || this.innnerValue;
+        return this.modelValue ;
       },
       set(val){
-        console.log("val",this.page);
-        this.$emit("input",val);
+        return val
+        
+
       }
     }
   },
   methods: {
-   prevPage(){
-      this.$emit('input', this.pageCurrent++);
+   prePage(){
+    const pageCur = this.pageCurrent -1;
+    this.$emit('update:modelValue',pageCur)
+     this.handleClick(pageCur);
    },
-    // clickHandler(page) {
-    //   // console.log("pageCount", this.pageCount);
-    //   // console.log("page",page);
-    //   // this.$emit("pageChange", page);
-    //   this.pageCurrent = page;
-    // },
+    nextPage(){
+      const pageCur = Math.ceil(this.pageCurrent) +1;
+      this.$emit("update:modelValue",pageCur);
+      this.handleClick(pageCur);
+      },
+    handleClick(pageCur){
+      this.$emit("pageChange",pageCur);
+    }
   },
 };
 </script>
@@ -62,6 +67,5 @@ export default {
 .pagination {
   display: flex;
 }
-.page-item {
-}
+
 </style>

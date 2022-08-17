@@ -62,7 +62,7 @@ export default {
         },
         updateRole(){
             this.checkRole();            
-            this.$store.dispatch("updatedRole")
+            this.$store.dispatch("updatedRole");
         },
         checkRole(){
             console.log(this.$store.state.role);

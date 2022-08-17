@@ -74,7 +74,7 @@ export default {
                     localStorage.setItem('role',1);
 
                     this.saveProfile(response.user);
-                    this.$router.push('/home/employee');
+                    this.$router.push('/home/employee?page=1');
                 },
                 error => {
                     alert(error.message);
@@ -84,7 +84,9 @@ export default {
             this.$store.dispatch('saveProfile', profile);
         },
         handleRegister() {
-            this.$router.push('/register');
+            console.log('register');
+            this.$router.push({name:'register'});
+            console.log(this.$route);
         },
         resetForm(formName) {
             this.$refs[formName].resetFields();

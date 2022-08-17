@@ -12,7 +12,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(employee) in filterEmployee" :key="employee.emp_no">
+          <tr v-for="(employee,index) in filterEmployee" :key="employee.emp_no">
             <td>{{ employee.emp_no }}</td>
             <td>{{ employee.first_name }}</td>
             <td>{{ employee.last_name }}</td>
@@ -33,7 +33,7 @@
               <button
 
                 class="btn waves-effect waves-light red darken-2"
-                @click="deletee(employee.id)"
+                @click="deletee(employee.id,index)"
               >
                 <i class="material-icons">Delete</i>
               </button>
@@ -55,7 +55,7 @@
     
     <AbcD v-bind:employees = "employees"
     v-bind:pageCount = "pageCount"
-    :page = "page"
+    v-model = "page"
     @pageChange = "pageChange"
     @prevPage = "prevPage" ></AbcD>
 
@@ -75,7 +75,8 @@ export default {
   },
 
   created() {
-    apiEmployee.getEmployee().then((res) => {
+    this.page = this.$route.query.page ;
+    apiEmployee.getEmployee(this.page).then((res) => {
       console.log("created", res.data.data);
       this.employees = res.data.data;
       this.pageCount = res.data.maxPage;
@@ -142,8 +143,9 @@ export default {
           this.displayDialog = false;
           console.log("add: ", res);
         });
-        apiEmployee.getEmployee().then((res) => {
-          this.employees = res.data;
+       apiEmployee.getEmployee(this.page).then((res) => {
+        
+          this.employees = res.data.data;
           this.pageCount = res.data.maxPage;
           console.log(this.employees);
         });
@@ -154,18 +156,16 @@ export default {
       this.displayDialog = true;
       this.addStatus = true;
     },
-    deletee(index) {
-      this.employees.filter((employee) => {
-        employee.id != index;
-      });
+    deletee(id,index) {
+      this.employees.slice(index,1);
 
       console.log("index: ", index);
-      apiEmployee.deleteEmployee(index).then((res) => {
+      apiEmployee.deleteEmployee(id).then((res) => {
         console.log(res);
       });
-      apiEmployee.getEmployee().then((res) => {
+      apiEmployee.getEmployee(this.page).then((res) => {
         console.log("avsdadf");
-        this.employees = res.data;
+        this.employees = res.data.data;
         console.log(this.employees);
       });
     },
@@ -180,25 +180,38 @@ export default {
       // console.log("closeDialog",this.$refs.edit.$refs.ruleForm.clearValidate());
       console.log("closeDialog", this.$refs.edit.$refs.ruleForm);
     },
-    pageChange(page) {
-      console.log("page: ", page);
-      this.page = page;
-    },
+   
     prevPage(page){
       this.page = page --;
+    },
+    pageChange(newVal){
+      console.log("pageChange",newVal);
+       console.log("route",this.$route)
+    this.$router.push({query:{page:newVal}})
+    apiEmployee.getEmployee(newVal).then((res)=>{
+      this.employees = res.data.data;
+      this.pageCount = res.data.maxPage;
+      console.log("update1",this.page)
+    }) 
     }
   },
+  // watch:{
+  //  page: function(newVal){
+  //   console.log("route",this.$route)
+  //   this.$router.push({query:{page:newVal}})
+  //   apiEmployee.getEmployee(newVal).then((res)=>{
+  //     this.employees = res.data.data;
+  //     this.pageCount = res.data.maxPage;
+  //     console.log("update1",this.page)
+  //   })
+  //  }
+  // },
   computed: {
     filterEmployee() {
-      return this.employees.filter((employee) => {
-        employee.hire_date = this.formatDate(employee.hire_date);
-        employee.birth_date = this.formatDate(employee.hire_date);
-        return employee.last_name
-          .toLowerCase()
-          .includes(this.search.toLowerCase());
-      });
-    },
-  },
+      console.log("filter:", this.employees)
+      return this.employees}
+  }
+  
 };
 </script>
 <style lang="css">

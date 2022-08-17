@@ -29,7 +29,10 @@ const routes = [
             {
                 path: 'employee',
                 name:'employee',
-                component: Employee
+                component: Employee,
+                beforeEnter: (to) => {
+                    to.query.page = to.query.page || 1;
+                }
             },
             {
                 path: "profile",
@@ -64,7 +67,7 @@ const router = createRouter({
 })
 router.beforeEach(async (to, from) => {
     if (!localStorage.getItem('token')
-        && to.path !== '/login'
+        && to.path !== '/login'&&   to.path !== '/register'
     ) {
         console.log("hihi",router.getRoutes())
         console.log(from.name)

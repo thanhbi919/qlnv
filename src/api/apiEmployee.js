@@ -4,8 +4,8 @@ export default {
     getProfile() {
         return Api.get("/profile");
     },
-    getEmployee() {
-        return Api.get("/employee?page_size=2");
+    getEmployee(page) {
+        return Api.get(`/employee?page_size=5&page=${page}`);
     },
     getDepartment(){
         return Api.get("/department").then(res => res.data.items);

@@ -117,6 +117,9 @@ export default {
           }
         });
       },
+      resetForm(){
+        this.$refs.ruleForm.resetFields();
+      },
        async handleRegister(form) {
            await apiAuth.register(form).then((response) => {
                 console.log(response);
