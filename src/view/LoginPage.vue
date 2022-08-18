@@ -1,4 +1,5 @@
 <template lang="">
+
 <div class="login-page" style="margin-top:100px">
 
     <el-form ref="ruleForm" :rules="rules" :label-position="top" label-width="100px" :model="ruleForm" style="max-width: 460px; margin:auto">
@@ -69,12 +70,11 @@ export default {
                 response => {
                     console.log(response);
                     localStorage.setItem('token', response.access_token);
-                    localStorage.setItem('username',response.user.username);
-                    localStorage.setItem('id',response.user.id);
+                    // localStorage.setItem('username',response.user.username);
+                    // localStorage.setItem('id',response.user.id);
                     localStorage.setItem('role',1);
-
                     this.saveProfile(response.user);
-                    this.$router.push('/home/employee?page=1');
+                    this.$router.push('/home');
                 },
                 error => {
                     alert(error.message);

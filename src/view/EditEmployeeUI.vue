@@ -7,8 +7,9 @@
             <el-form-item label="image" prop="avatar" >
                 <el-upload action="#" list-type="picture-card" :auto-upload="false"
                 :file-list="fileList" 
-                 :on-change="toggleUpload" :on-remove="toggleUpload" 
+                 :on-change="toggleUpload" :on-remove="removeAvatar" 
                  :class="{ hideUpload: showUpload }">
+            
                 </el-upload>
             </el-form-item>
             <el-form-item label="emp_no" prop="emp_no">
@@ -65,205 +66,243 @@
 import apiEmployee from "@/api/apiEmployee";
 
 export default {
-    created() {
-        apiEmployee.getDepartment().then((res) => {
-            // console.log("department",res)
-            this.departments = res;
-        });
-        apiEmployee.getTitle().then((res) => {
-            // console.log("title",res.data)
-            this.titles = res.data;
-        });
+  created() {
+    apiEmployee.getDepartment().then((res) => {
+      // console.log("department",res)
+      this.departments = res;
+    });
+    apiEmployee.getTitle().then((res) => {
+      // console.log("title",res.data)
+      this.titles = res.data;
+    });
+  },
+  props: {
+    dialogTableVisible: {
+      type: Boolean,
+      default: false,
     },
-    props: {
-        dialogTableVisible: {
-            type: Boolean,
-            default: false,
-        },
-        employee:{
-            type:Object,
-        },
-        addStatus:{
-            type:Boolean,
-        },
+    employee: {
+      type: Object,
     },
-    data() {
-        return {
-            urlAvatar: [
-            ],
-            fileList:[],
-            showUpload: false,
-             formData: new FormData(),
-            departments: [],
-            titles: [],
-            dialogDisplay: false,
-            ruleForm: {
-                avatar: "",
-                emp_no: "",
-                first_name: "",
-                last_name: "",
-                gender: "",
-                salary: "",
-                department_id: "",
-                title_id: "",
-                hire_date: "",
-                birth_date: "",
-            },
-            rules: {
-                avatar: [
-                    { required: true, message: "Please upload an image", trigger: "change" },
-                ],
-                emp_no: [{
-                    required: true,
-                    message: "Please input employee number",
-                    trigger: "blur",
-                }, ],
-                first_name: [{
-                    required: true,
-                    message: "Please input first name",
-                    trigger: "blur",
-                }, ],
-                last_name: [{
-                    required: true,
-                    message: "Please input last name",
-                    trigger: "blur",
-                }, ],
-                gender: [{
-                    required: true,
-                    message: "Please input gender",
-                }, ],
-                salary: [{
-                    required: true,
-                    message: "Please input salary",
-                }, ],
-                department_id: [{
-                    required: true,
-                    message: "Please input department",
-                }, ],
-                title_id: [{
-                    required: true,
-                    message: "Please input title",
-                }, ],
-                hire_date: [{
-                    required: true,
-                    message: "Please input hire date",
-                }, ],
-                birth_date: [{
-                    required: true,
-                    message: "Please input birth date",
-                }, ],
-            },
-        };
+    addStatus: {
+      type: Boolean,
     },
-    watch: {
-        dialogTableVisible(val) {
-            this.dialogDisplay = val;
-        },
-        employee: function (newVal) {
-            this.ruleForm = {
-                ...newVal
-            };
-            console.log("watch", this.ruleForm.avatar);
-            if (this.ruleForm.avatar)
-                this.urlAvatar.url = process.env.VUE_APP_BASE_URL_AVATAR + '/' + this.ruleForm.avatar;
-            this.fileList =[{
-                url: this.urlAvatar.url
-            }];
-            this.showUpload = true;
-            console.log("watch", this.showUpload);
-            console.log("watch", this.urlAvatar);
-
-        },
-        addStatus: function (){
-            this.ruleForm={}
-            this.fileList =[];
-        }
+  },
+  data() {
+    return {
+      urlAvatar: [],
+      fileList: [],
+      showUpload: false,
+      formData: new FormData(),
+      departments: [],
+      titles: [],
+      dialogDisplay: false,
+      ruleForm: {
+        avatar: "",
+        emp_no: "",
+        first_name: "",
+        last_name: "",
+        gender: "",
+        salary: "",
+        department_id: "",
+        title_id: "",
+        hire_date: "",
+        birth_date: "",
+      },
+      rules: {
+        avatar: [
+          {
+            required: true,
+            message: "Please upload an image",
+            trigger: "change",
+          },
+        ],
+        emp_no: [
+          {
+            required: true,
+            message: "Please input employee number",
+            trigger: "blur",
+          },
+        ],
+        first_name: [
+          {
+            required: true,
+            message: "Please input first name",
+            trigger: "blur",
+          },
+        ],
+        last_name: [
+          {
+            required: true,
+            message: "Please input last name",
+            trigger: "blur",
+          },
+        ],
+        gender: [
+          {
+            required: true,
+            message: "Please input gender",
+          },
+        ],
+        salary: [
+          {
+            required: true,
+            message: "Please input salary",
+          },
+        ],
+        department_id: [
+          {
+            required: true,
+            message: "Please input department",
+          },
+        ],
+        title_id: [
+          {
+            required: true,
+            message: "Please input title",
+          },
+        ],
+        hire_date: [
+          {
+            required: true,
+            message: "Please input hire date",
+          },
+        ],
+        birth_date: [
+          {
+            required: true,
+            message: "Please input birth date",
+          },
+        ],
+      },
+    };
+  },
+  computed: {
+    ruleFormComputed: {
+      get() {
+        return this.employee;
+      },
+      set(val) {
+        return val;
+      },
     },
-    methods: {
-        async closeDialog() {
-            this.showUpload = false;
-            console.log("closeDialog");
-            this.$emit("closeDialog");
-            
-        },
-       
-        toggleUpload(e) {
-            console.log("toggleUpload", this.fileList);
-            this.ruleForm.avatar = e.raw;
-            this.formData.append("avatar", e.raw);
-            console.log(e.raw);
-            this.showUpload = !this.showUpload
-        },
-        submitForm(){
-           
-            this.formData.append("emp_no", this.ruleForm.emp_no);
-            this.formData.append("first_name", this.ruleForm.first_name);
-            this.formData.append("last_name", this.ruleForm.last_name);
-            this.formData.append("gender",this.ruleForm.gender);
-            this.formData.append("salary", this.ruleForm.salary);
-            this.formData.append("title_id", this.ruleForm.title_id);
-            this.formData.append("department_id", this.ruleForm.department_id);
-            this.formData.append("hire_date", this.ruleForm.hire_date);
-            this.formData.append("birth_date", this.ruleForm.birth_date);
-            console.log(this.ruleForm);
-            this.dialogDisplay = false;
-            this.$emit("saveEdit", this.formData, this.ruleForm.id);
-            
-        }
+  },
+  watch: {
+    dialogTableVisible(val) {
+      this.dialogDisplay = val;
     },
-
+    employee: function (newVal) {
+      this.ruleForm = {
+        ...newVal,
+      };
+      console.log("watch1", this.ruleForm.avatar);
+      if (this.ruleForm.avatar)
+        this.urlAvatar.url =
+          process.env.VUE_APP_BASE_URL_AVATAR + "/" + this.ruleForm.avatar;
+      this.fileList = [
+        {
+          url: this.urlAvatar.url,
+        },
+      ];
+      this.showUpload = true;
+      console.log("watch2", this.showUpload);
+      console.log("watch3", this.urlAvatar.url);
+    },
+    addStatus: function () {
+      this.ruleForm = {};
+      this.fileList = [];
+    },
+  },
+  methods: {
+    closeDialog() {
+      this.showUpload = false;
+      console.log("closeDialog");
+      this.$emit("closeDialog");
+    },
+    removeAvatar(){
+      console.log("removeAvatar")
+      this.fileList = [];
+      this.showUpload = false;
+    }
+    ,
+    toggleUpload(e) {
+      console.log("toggleUpload", this.fileList);
+      this.ruleForm.avatar = e.raw;
+      this.formData.append("avatar", e.raw);
+      console.log(e.raw);
+      console.log("avatar:", this.ruleForm.avatar);
+      this.showUpload = !this.showUpload;
+    },
+    submitForm() {
+      this.formData.append("emp_no", this.ruleForm.emp_no);
+      this.formData.append("first_name", this.ruleForm.first_name);
+      this.formData.append("last_name", this.ruleForm.last_name);
+      this.formData.append("gender", this.ruleForm.gender);
+      this.formData.append("salary", this.ruleForm.salary);
+      this.formData.append("title_id", this.ruleForm.title_id);
+      this.formData.append("department_id", this.ruleForm.department_id);
+      this.formData.append("hire_date", this.ruleForm.hire_date);
+      this.formData.append("birth_date", this.ruleForm.birth_date);
+      console.log("form :", this.ruleForm);
+      this.$emit("update:employee", this.formData);
+      this.$emit("saveEdit",this.ruleForm.id);
+      this.$emit("closeDialog");
+      
+      this.closeDialog();
+    },
+  },
 };
 </script>
 
 <style lang="css">
 .el-button--text {
-    margin-right: 15px;
+  margin-right: 15px;
 }
 
 .el-select {
-    width: 300px;
+  width: 300px;
 }
 
 .el-input {
-    width: 300px;
+  width: 300px;
 }
 
 .dialog-footer button:first-child {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
 }
 
 .avatar-uploader .el-upload:hover {
-    border-color: #409eff;
+  border-color: #409eff;
 }
 
 .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
 }
 
 .activeClass {
-    display: none;
+  display: none;
 }
 
-.hideUpload>.el-upload-list>.el-upload--picture-card {
-    display: none;
+.hideUpload > .el-upload-list > .el-upload--picture-card {
+  display: none;
 }
 
 .avatar {
-    width: 178px;
-    height: 178px;
-    display: block;
+  width: 178px;
+  height: 178px;
+  display: block;
 }
 </style>

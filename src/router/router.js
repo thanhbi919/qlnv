@@ -1,16 +1,13 @@
 import LoginPage from '@/view/LoginPage';
 import { createRouter, createWebHistory } from 'vue-router'
 import RegisterPage from '@/view/RegisterPage';
-// import HomePage from '@/view/HomePage';
 import Employee from '@/view/Employee';
 import Navigation from '@/layout/Navigation';
+// import HomePage from "@/view/HomePage";
 import NotFound from '@/view/NotFound';
 import Profile from '@/view/ProFile';
 const routes = [
-    {
-        path: '/',
-        component: Navigation,
-    },
+  
     {
         path: '/login',
         component: LoginPage,
@@ -24,8 +21,9 @@ const routes = [
     {
         path: '/home',
         component: Navigation,
-        name:'home',
+        redirect:'home/employee',
         children: [
+            
             {
                 path: 'employee',
                 name:'employee',

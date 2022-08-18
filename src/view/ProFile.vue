@@ -1,13 +1,7 @@
 <template lang="">
-    <div class = "darktheme">
+ hihihi
        
-    </div>
-    <div class = "darktheme">
-       
-    </div>
-    <div class = "darktheme">
-       
-    </div>
+ 
 
 </template>
 <script>

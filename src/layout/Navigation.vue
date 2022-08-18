@@ -1,6 +1,6 @@
 <template lang="">
 <div class="nav">
-
+    
     <div>
         <router-link to="/login" v-if="!hasProfile">
             Đăng nhập
@@ -38,7 +38,8 @@
 import apiAuth from "@/api/apiAuth";
 import apiEmployee from '@/api/apiEmployee';
 export default {
-    name: "NavigationX",
+    // eslint-disable-next-line vue/multi-word-component-names
+    name: "Navigation",
     data() {
         return {
             isActive1: true,
