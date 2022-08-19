@@ -1,6 +1,7 @@
-<template  lang="">
+<template  >
     <div class ="employe1">
         <h1>Danh sach </h1>
+
          <el-button type="Default" @click="add()"  >ADD</el-button>
 <br>
         <table class="table">
@@ -66,23 +67,20 @@ import apiEmployee from "@/api/apiEmployee";
 import Pagination from "@/components/Pagination";
 import Mixin from "@/mixins/mixin";
 import EditEmployeeUI from "@/view/EditEmployeeUI";
+import {mapActions} from "vuex";
 export default {
-  name: "EmployeE",
+  // eslint-disable-next-line vue/multi-word-component-names
+  name: "Employee",
   mixins: [Mixin],
   components: {
     Pagination,
     EditEmployeeUI,
   },
 
-  created() {
+
+  async created() {
     this.page = this.$route.query.page;
-    apiEmployee.getEmployee(this.page).then((res) => {
-      console.log("created", res.data.data);
-      this.employees = res.data.data;
-      this.pageCount = res.data.maxPage;
-      // console.log("pageCount", this.pageCount);
-      console.log("after", this.employees);
-    });
+    await this.getList();
   },
   data: function () {
     return {
@@ -113,6 +111,16 @@ export default {
     };
   },
   methods: {
+     async getList() {
+      const data = {page:this.page,page_size:5};
+      await apiEmployee.getEmployee(data).then((res) => {
+        console.log("created", res.data.data);
+        this.employees = res.data.data;
+        this.pageCount = res.data.maxPage;
+      });
+      this.$store.dispatch("employeeStore/saveEmployees",this.employees,{root:true})
+
+    },
     edit(index) {
       console.log("index: ", index);
       apiEmployee.getEmployeeById(index).then((res) => {
@@ -130,22 +138,14 @@ export default {
           console.log(res);
           this.displayDialog = false;
         });
-        apiEmployee.getEmployee(this.page).then((res) => {
-          this.employees = res.data.data;
-          this.pageCount = res.data.maxPage;
-          console.log(this.employees);
-        });
+      this.getList();
       } else {
         console.log("add: ", this.employeeEdit);
         await apiEmployee.createEmployee(this.employeeEdit).then((res) => {
           this.displayDialog = false;
           console.log("add: ", res);
         });
-        apiEmployee.getEmployee(this.page).then((res) => {
-          this.employees = res.data.data;
-          this.pageCount = res.data.maxPage;
-          console.log(this.employees);
-        });
+        this.getList();
         this.addStatus = false;
       }
     },
@@ -160,7 +160,6 @@ export default {
       await apiEmployee.deleteEmployee(id).then((res) => {
         console.log(res);
       });
-
       apiEmployee.getEmployee(this.page).then((res) => {
         if (res === []) console.log("res:", res);
         this.employees = res.data.data;
@@ -177,15 +176,16 @@ export default {
       console.log("closeDialog1", this.$refs.edit.$refs.ruleForm.resetFields());
       console.log("closeDialog2", this.$refs.edit.$refs.ruleForm);
     },
-    pageChange(newVal) {
+   async pageChange(newVal) {
       console.log("pageChange", newVal);
       console.log("route", this.$route);
       this.$router.push({ query: { page: newVal } });
-      apiEmployee.getEmployee(newVal).then((res) => {
+     await apiEmployee.getEmployee({page: newVal,page_size: 5}).then((res) => {
         this.employees = res.data.data;
         this.pageCount = res.data.maxPage;
         console.log("update1", this.page);
       });
+      this.$store.dispatch("saveEmployees",this.employees)
     },
   },
   computed: {
@@ -193,6 +193,7 @@ export default {
       console.log("filter:", this.employees);
       return this.employees;
     },
+    ...mapActions(['saveEmployees'])
   },
   watch: {
     employees(newVal) {
@@ -201,6 +202,7 @@ export default {
         this.pageChange(this.page);
       }
     },
+
   },
 };
 </script>

@@ -1,4 +1,4 @@
-<template lang="">
+<template >
 <div class="nav">
     
     <div>
@@ -9,11 +9,7 @@
             Đăng xuất
         </router-link>
     </div>
-    <!-- <div>
-        <router-link to="/home" v-if="hasProfile">
-            {{profile.username}}
-        </router-link>
-    </div> -->
+
     <div>
         <router-link to="/home/profile" @click = "updateRole">
            1
@@ -66,7 +62,7 @@ export default {
             this.$store.dispatch("updatedRole");
         },
         checkRole(){
-            console.log(this.$store.state.role);
+            console.log(this.$store.state.profileStore.role);
             if(localStorage.role ==2){
                 console.log("2");
                 this.isActive1 = false;
@@ -92,7 +88,7 @@ export default {
             return localStorage.getItem("token");
         },
         getUsername() {
-            return this.$store.state.profile.username;
+            return this.$store.state.profileStore.profile.username;
         }
     },
 };
