@@ -1,4 +1,4 @@
-<template lang="">
+<template >
     <div>
         Day la home page
     </div>

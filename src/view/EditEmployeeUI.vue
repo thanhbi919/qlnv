@@ -1,6 +1,6 @@
-<template lang="">
+<template >
 <div>
-    <el-dialog 
+    <el-dialog
     :before-close="closeDialog" 
     v-model="dialogDisplay" title="Employee detail">
         <el-form ref="ruleForm" :rules="rules" :label-position="top" label-width="100px" :model="ruleForm" style="max-width: 460px; margin:auto">
@@ -23,8 +23,8 @@
             </el-form-item>
             <el-form-item label="gender" prop="gender">
                 <el-select v-model="ruleForm.gender" placeholder="Select">
-                    <el-option value="M">Male</el-option>
-                    <el-option value="F">Female</el-option>
+                    <el-option label="Male" value="M">Male</el-option>
+                    <el-option label="Male" value="F">Female</el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="salary" prop="salary">
@@ -32,23 +32,23 @@
             </el-form-item>
             <el-form-item label="department" prop="department_id">
                 <el-select v-model="ruleForm.department_id">
-                    <el-option v-for="item in departments" :key="item.id" v-bind:value="item.id">
+                    <el-option :label="item.name" v-for="item in departments" :key="item.id" v-bind:value="item.id">
                         {{ item.name }}
                     </el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="title" prop="title_id">
                 <el-select v-model="ruleForm.title_id">
-                    <el-option v-for="item in titles" :key="item.id" v-bind:value="item.id">
+                    <el-option :label="item.name" v-for="item in titles" :key="item.id" v-bind:value="item.id">
                         {{ item.name }}
                     </el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="hire_date" prop="hire_date">
-                <el-input type="date" v-model="ruleForm.hire_date" />
+                <el-date-picker type="date" v-model="ruleForm.hire_date" />
             </el-form-item>
             <el-form-item label="birth_date" prop="birth_date">
-                <el-input type="date" v-model="ruleForm.birth_date" />
+                <el-date-picker type="date" v-model="ruleForm.birth_date" />
             </el-form-item>
 
         </el-form>
@@ -213,7 +213,11 @@ export default {
       this.fileList = [];
     },
   },
+
   methods: {
+    hihi(){
+      console.log("el date: ",this.eldatepicker)
+    },
     closeDialog() {
       this.showUpload = false;
       console.log("closeDialog");

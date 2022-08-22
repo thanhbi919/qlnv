@@ -4,7 +4,6 @@ import RegisterPage from '@/view/RegisterPage';
 import Employee from '@/view/Employee';
 import Navigation from '@/layout/Navigation';
 // import HomePage from "@/view/HomePage";
-import NotFound from '@/view/NotFound';
 import Profile from '@/view/ProFile';
 const routes = [
   
@@ -40,37 +39,35 @@ const routes = [
             }
         ]
     },
-    {
-        path: "/:catchAll(.*)",
-        component: NotFound,
-    },
+    // {
+    //     path: "/:catchAll(.*)",
+    //     component: NotFound,
+    // },
     
 
 ]
-
-// function checkRole(){
-//     if(localStorage.getItem('id')%2 == 0){
-//         console.log('admin');
-//         return {name: 'profile' };
-//     }else {
-//         console.log('user');    
-//         return {name: 'home'};
-//     }
-
-// }
 
 const router = createRouter({
     history: createWebHistory(),
     routes: routes
 })
 router.beforeEach(async (to, from) => {
+    console.log("dang route ne",to.path)
     if (!localStorage.getItem('token')
-        && to.path !== '/login'&&   to.path !== '/register'
+        && to.path !== '/login' &&   to.path !== '/register'
     ) {
+        console.log("zo day dung hoong")
         console.log("hihi",router.getRoutes())
         console.log(from.name)
         return { path: '/login' }
-    }     
+    }     else{
+        console.log("tao vao day nay")
+    }
+    if(!to.name){
+        console.log("to:",to)
+        return  { path: '/login'}
+    }
+
 })
 
 export default router

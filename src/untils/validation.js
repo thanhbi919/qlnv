@@ -4,7 +4,7 @@ const validateRegex =(rule,value,callback)=>{
     console.log("value: ", regex.test(value));
     if(!regex.test(value)){
         return callback(new Error(rule.message));
-    }
+    }else return true;
 }
 
 export default validateRegex;

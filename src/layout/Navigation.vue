@@ -5,19 +5,19 @@
         <router-link to="/login" v-if="!hasProfile">
             Đăng nhập
         </router-link>
-        <router-link to="/" v-else @click="logout()">
+        <div class="logout" v-else @click="logout()">
             Đăng xuất
-        </router-link>
+        </div>
     </div>
 
     <div>
         <router-link to="/home/profile" @click = "updateRole">
            1
         </router-link>
-        <router-link  to="/home/profile" :class = "{active:isActive1}" @click = "updateRole"  >
+        <router-link  to="/home/profile" :class = "{active1:isActive1}" @click = "updateRole"  >
            2
         </router-link>
-        <router-link  :class = "{active:isActive2}" disabled  :event = "''" to="/home/profile">
+        <router-link  :class = "{active1:isActive2}" disabled  :event = "''" to="/home/profile">
            3
         </router-link>
    
@@ -49,17 +49,18 @@ export default {
     },
     methods: {
         async logout() {
+          await localStorage.clear();
+            apiAuth.logout().then(() => {
 
-            await apiAuth.logout().then(() => {
                 this.$router.push("/login");
             });
-            localStorage.clear();
-            this.$store.dispatch("clearProfile");
+
+            this.$store.dispatch("profileStore/clearProfile");
             
         },
         updateRole(){
             this.checkRole();            
-            this.$store.dispatch("updatedRole");
+            this.$store.dispatch("profileStore/updatedRole");
         },
         checkRole(){
             console.log(this.$store.state.profileStore.role);
@@ -77,7 +78,7 @@ export default {
             apiEmployee.getProfile().then(
             response => {
                 console.log(response);
-                this.$store.dispatch("saveProfile", response.data.item);
+                this.$store.dispatch("profileStore/saveProfile", response.data.item);
             }
         );
         }
@@ -105,10 +106,14 @@ export default {
     justify-content: space-between;
 
 }
-.active{
+.active1{
     pointer-events: none;
     opacity: 0.4;
     color :red;
+}
+.logout:hover{
+  color: red;
+  transition: 1s;
 }
 
 .selector-for-some-widget {
