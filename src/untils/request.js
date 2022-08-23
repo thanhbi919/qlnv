@@ -24,20 +24,20 @@ const Api =
     }
   )
 
-  Api.interceptors.response.use(
-    function(response) {
-        if(response.status===401){
-            console.log("response:",response)
-            window.location.href = '/home';
-        }
-        return response;
-    },
-    function(err){
-        console.log("err:",err)
-        window.location.href = '/home';
-        return Promise.reject(err);
-    }
-  )
+  // Api.interceptors.response.use(
+  //   function(response) {
+  //       if(response.status===401){
+  //           console.log("response:",response)
+  //           window.location.href = '/home';
+  //       }
+  //       return response;
+  //   },
+  //   function(err){
+  //       console.log("err:",err)
+  //       window.location.href = '/home';
+  //       return Promise.reject(err);
+  //   }
+  // )
 
 
 export default Api

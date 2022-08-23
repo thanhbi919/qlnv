@@ -161,13 +161,13 @@ export default {
       this.addStatus = true;
     },
     async deletee(id, index) {
-      await this.employees.slice(index, 1);
+      this.employees.slice(index, 1);
 
       console.log("index: ", index);
       await apiEmployee.deleteEmployee(id).then((res) => {
         console.log(res);
       });
-      apiEmployee.getEmployee(this.page).then((res) => {
+      apiEmployee.getEmployee({page:this.page,page_size:5}).then((res) => {
         if (res === []) console.log("res:", res);
         this.employees = res.data.data;
         console.log(this.employees);

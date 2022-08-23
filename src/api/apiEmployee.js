@@ -27,6 +27,9 @@ export default {
     },
     createEmployee(payload){
         return Api.post("/employee", payload).then(res=>res.data);
+    },
+    addListImages(payload){
+        return Api.post("/image",payload).then(res =>res.data)
     }
     
 }

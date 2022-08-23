@@ -60,7 +60,7 @@ export default {
 
   methods: {
     submitForm(formName) {
-      console.log(this.$refs[formName]);
+      console.log("form submit:",this.$refs[formName]);
       this.$refs[formName].validate((valid) => {
         if (valid) {
           console.log('submit!');
