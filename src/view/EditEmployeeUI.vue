@@ -86,6 +86,7 @@ import apiEmployee from "@/api/apiEmployee";
 
 export default {
   created() {
+
     apiEmployee.getDepartment().then((res) => {
       this.departments = res;
     });
